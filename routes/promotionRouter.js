@@ -1,46 +1,50 @@
 const express = require("express");
 const router = express.Router();
 
-promotions = ["10% discount","5% discount","Buy 1 Get 1","15% cashback on bkash"];
+//promotions = ["10% discount","5% discount","Buy 1 Get 1","15% cashback on bkash"];
+const Promotions = require("../models/promotionsSchema");
 
-router.get ("/",(req,res) =>{
-    res.send(promotions);
+
+router.get ("/",async(req,res) =>{
+    const promotionsList = await Promotions.find();
+    res.send(promotionsList);
 });
 
-router.get ("/:promoId",(req,res) =>{
+router.get ("/:promoId",async(req,res) =>{
     const index = req.params.promoId;
-    res.send(promotions[index]);
+    const promotion = await Promotions.findById(index);
+    res.send(promotion);
 });
 
 
 //post
 
-router.post ("/",(req,res) =>{
-    const new_promotions =req.body.name;
-    promotions.push(new_promotions);
+router.post ("/",async(req,res) =>{
+    const new_promotion = new Promotions(req.body);
+    await new_promotion.save();//promotions.push(new_promotions);
     console.log("A new promotion added");
-    res.send("Added a new promotion :"+req.body.name);
+    res.send("Added a new promotion :"+new_promotion);
 });
 
 //delete all promotions
-router.delete("/",(req,res) =>{
-    promotions = [];
+router.delete("/",async(req,res) =>{
+    await Promotions.remove({});//promotions = [];
     res.send("Deleted all promotions");
 });
 
 
 //delete an promotion
-router.delete("/:promoId",(req,res) =>{
+router.delete("/:promoId",async (req,res) =>{
     const index = req.params.promoId;
     //const dish = promotions[index];
-    promotions.splice(index,1);
+    await Promotions.findByIdAndDelete(index);//promotions.splice(index,1);
     res.send("Deleted  promotion at index: " + index);
 });
 
 //put
-router.put("/:promoId",(req,res) =>{
+router.put("/:promoId",async(req,res) =>{
     const index = req.params.promoId;
-    promotions[index] = req.body.name;
+    await Promotions.findByIdAndUpdate(index,req.body);//promotions[index] = req.body.name;
     res.send("updated  promotion at index: "+ index);
 });
 
