@@ -5,48 +5,78 @@ const router = express.Router();
 const Promotions = require("../models/promotionsSchema");
 
 
-router.get ("/",async(req,res) =>{
-    const promotionsList = await Promotions.find();
-    res.send(promotionsList);
+router.get ("/",(req,res) =>{
+    Promotions.find().then((PromotionsList) =>{
+         res.send(PromotionsList);
+    }).catch((error) =>{
+        console.log(error);
+        res.send(error);
+    });
 });
 
-router.get ("/:promoId",async(req,res) =>{
-    const index = req.params.promoId;
-    const promotion = await Promotions.findById(index);
-    res.send(promotion);
+router.get ("/:PromotionId",(req,res) =>{
+    //const index = req.params.PromotionId;
+    Promotions.findById(req.params.PromotionId).then((Promotion) =>{
+        res.send(Promotion);
+    }).catch((error) =>{
+        console.log(error);
+        res.send("__Errror__");
+    });
 });
 
 
 //post
 
-router.post ("/",async(req,res) =>{
-    const new_promotion = new Promotions(req.body);
-    await new_promotion.save();//promotions.push(new_promotions);
-    console.log("A new promotion added");
-    res.send("Added a new promotion :"+new_promotion);
+router.post ("/",(req,res) =>{
+    const new_Promotion = new Promotions(req.body);
+    console.log(req.body.name);
+    //Promotions.push(new_Promotion);
+     new_Promotion.save().then(() =>{
+        console.log("A new Promotion added");
+        res.send("Added a new Promotion :"+new_Promotion);
+     }).catch((error) =>{
+        console.log(error);
+        res.send("__Errror__");
+     })
+    
 });
 
-//delete all promotions
-router.delete("/",async(req,res) =>{
-    await Promotions.remove({});//promotions = [];
-    res.send("Deleted all promotions");
+//delete all items
+router.delete("/",(req,res) =>{
+     Promotions.remove({}).then(()=>{
+        res.send("Deleted all Promotions");
+     }).catch((err) =>{
+        console.log(err);
+        res.send("__Errror__");
+     });//Promotions = [];
+    
 });
 
 
-//delete an promotion
-router.delete("/:promoId",async (req,res) =>{
-    const index = req.params.promoId;
-    //const dish = promotions[index];
-    await Promotions.findByIdAndDelete(index);//promotions.splice(index,1);
-    res.send("Deleted  promotion at index: " + index);
+//delete an item
+router.delete("/:PromotionId",(req,res) =>{
+    const index = req.params.PromotionId;
+     Promotions.findByIdAndDelete(index).then(() =>{
+        res.send("Deleted  Promotion at index: " + index);
+     }).catch((err) =>{
+        console.log(err);
+        res.send(err);
+     });//Promotions.splice(index,1);
+    
 });
 
 //put
-router.put("/:promoId",async(req,res) =>{
-    const index = req.params.promoId;
-    await Promotions.findByIdAndUpdate(index,req.body);//promotions[index] = req.body.name;
-    res.send("updated  promotion at index: "+ index);
+router.put("/:PromotionId",(req,res) =>{
+    const index = req.params.PromotionId;
+     Promotions.findByIdAndUpdate(index,req.body).then((Promotion) =>{
+        res.send("updated  Promotion at index: "+ index);
+     }).catch((err)=>{
+        console.log(err);
+        res.send(err); 
+     });//Promotions[index] = req.body.name;
+    
 });
+
 
 
 

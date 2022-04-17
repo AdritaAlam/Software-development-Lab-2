@@ -20,7 +20,7 @@ router.get ("/:dishId",(req,res) =>{
         res.send(dish);
     }).catch((error) =>{
         console.log(error);
-        res.send("goru");
+        res.send("__Error___");
     });
 });
 
