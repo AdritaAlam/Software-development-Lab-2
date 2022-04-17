@@ -5,47 +5,76 @@ const router = express.Router();
 const Dishes = require("../models/dishesSchema");
 
 
-router.get ("/",async(req,res) =>{
-    const dishesList = await Dishes.find();
-    res.send(dishesList);
+router.get ("/",(req,res) =>{
+    Dishes.find().then((dishesList) =>{
+         res.send(dishesList);
+    }).catch((error) =>{
+        console.log(error);
+        res.send(error);
+    });
 });
 
-router.get ("/:dishId",async(req,res) =>{
+router.get ("/:dishId",(req,res) =>{
     //const index = req.params.dishId;
-    const dish = await Dishes.findById(req.params.dishId);
-    res.send(dish);
+    Dishes.findById(req.params.dishId).then((dish) =>{
+        res.send(dish);
+    }).catch((error) =>{
+        console.log(error);
+        res.send("goru");
+    });
 });
 
 
 //post
 
-router.post ("/",async(req,res) =>{
+router.post ("/",(req,res) =>{
     const new_dish = new Dishes(req.body);
+    console.log(req.body.name);
     //dishes.push(new_dish);
-    await new_dish.save();
-    console.log("A new dish added");
-    res.send("Added a new dish :"+new_dish);
+     new_dish.save().then(() =>{
+        console.log("A new dish added");
+        res.send("Added a new dish :"+new_dish);
+     }).catch((error) =>{
+        console.log(error);
+        res.send(error);
+     })
+    
 });
 
 //delete all items
-router.delete("/",async(req,res) =>{
-    await Dishes.remove({});//dishes = [];
-    res.send("Deleted all dishes");
+router.delete("/",(req,res) =>{
+     Dishes.remove({}).then(()=>{
+        res.send("Deleted all dishes");
+     }).catch((err) =>{
+        console.log(err);
+        res.send(err);
+     });//dishes = [];
+    
 });
 
 
 //delete an item
-router.delete("/:dishId",async(req,res) =>{
+router.delete("/:dishId",(req,res) =>{
     const index = req.params.dishId;
-    await Dishes.findByIdAndDelete(index);//dishes.splice(index,1);
-    res.send("Deleted  dish at index: " + index);
+     Dishes.findByIdAndDelete(index).then(() =>{
+        res.send("Deleted  dish at index: " + index);
+     }).catch((err) =>{
+        console.log(err);
+        res.send(err);
+     });//dishes.splice(index,1);
+    
 });
 
 //put
-router.put("/:dishId",async(req,res) =>{
+router.put("/:dishId",(req,res) =>{
     const index = req.params.dishId;
-    await Dishes.findByIdAndUpdate(index,req.body);//dishes[index] = req.body.name;
-    res.send("updated  dish at index: "+ index);
+     Dishes.findByIdAndUpdate(index,req.body).then((dish) =>{
+        res.send("updated  dish at index: "+ index);
+     }).catch((err)=>{
+        console.log(err);
+        res.send(err); 
+     });//dishes[index] = req.body.name;
+    
 });
 
 

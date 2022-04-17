@@ -1,15 +1,14 @@
 PORT = process.env.PORT || 3000;
 
 const express = require("express");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const moongoose = require ("mongoose");
 
 
 //Middleware
 const app = express();
-app.use(bodyParser.json());
-app.use(morgan("tiny"));
+app.use(express.json());
+ app.use(morgan("tiny"));
 
 
 //Routes
@@ -31,6 +30,6 @@ moongoose
         app.use("/leaders",leaderRouter);
     });
 
-app.listen(3000,() =>{
+app.listen(PORT,() =>{
     console.log("Listening to PORT : "+ PORT);
 });
